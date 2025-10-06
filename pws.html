@@ -3,83 +3,115 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cuaca</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <title>Info Cuaca</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
         body {
-            font-family: 'Poppins', sans-serif;
+            font-family: Arial, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            transition: background 0.6s ease;
-            background: linear-gradient(135deg, #89CFF0 0%, #4A90E2 100%);
+            background: #f5f5f5;
+            padding: 20px;
         }
         .container {
-            text-align: center;
+            background: white;
+            border: 2px solid #333;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
-        .search-box {
+        .header {
+            background: white;
+            padding: 15px 20px;
+            border-bottom: 3px solid #333;
+        }
+        .header h1 {
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .content {
+            padding: 20px;
+        }
+        .search-row {
+            display: flex;
+            align-items: center;
             margin-bottom: 20px;
+            gap: 10px;
         }
-        .search-box input {
-            padding: 10px 15px;
+        .search-row label {
             font-size: 14px;
-            border: none;
-            border-radius: 8px 0 0 8px;
-            width: 200px;
+            min-width: 80px;
         }
-        .search-box button {
-            padding: 10px 20px;
+        .search-row input {
+            flex: 1;
+            padding: 6px 10px;
             font-size: 14px;
-            border: none;
-            border-radius: 0 8px 8px 0;
-            background: #4A90E2;
-            color: white;
+            border: 1px solid #333;
+        }
+        .search-row button {
+            padding: 6px 20px;
+            font-size: 14px;
+            border: 1px solid #333;
+            background: #e0e0e0;
             cursor: pointer;
         }
-        .weather-card {
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 12px;
-            padding: 30px;
-            min-width: 280px;
+        .info-grid {
+            display: grid;
+            grid-template-columns: 120px 1fr;
+            gap: 12px 0;
+            font-size: 14px;
+        }
+        .info-label {
+            font-weight: normal;
             color: #333;
         }
-        .location { font-size: 22px; font-weight: 600; }
-        .temperature { font-size: 48px; font-weight: 600; margin: 15px 0; }
-        .condition { display: flex; align-items: center; justify-content: center; margin: 15px 0; }
-        .condition-icon { width: 50px; margin-right: 10px; }
-        .details { display: flex; justify-content: space-between; margin-top: 20px; font-size: 12px; gap: 15px; }
-        .detail-item { text-align: center; }
-        .detail-item .label { opacity: 0.7; margin-bottom: 5px; }
-        .detail-item .value { font-weight: 600; }
+        .info-value {
+            font-weight: bold;
+        }
+        .divider {
+            grid-column: 1 / -1;
+            height: 1px;
+            background: #ddd;
+            margin: 5px 0;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="search-box">
-            <input type="text" id="city-input" placeholder="Cari kota...">
-            <button id="search-btn">Cari</button>
+        <div class="header">
+            <h1>INFO CUACA</h1>
         </div>
-        <div class="weather-card">
-            <div class="location">Memuat...</div>
-            <div class="temperature">-°C</div>
-            <div class="condition">
-                <img class="condition-icon" src="" alt="">
-                <span class="condition-text">-</span>
+        <div class="content">
+            <div class="search-row">
+                <label>Lokasi :</label>
+                <input type="text" id="city-input" value="yogyakarta">
+                <button id="search-btn">GET</button>
             </div>
-            <div class="details">
-                <div class="detail-item">
-                    <div class="label">Terasa</div>
-                    <div class="value feels-like">-°C</div>
-                </div>
-                <div class="detail-item">
-                    <div class="label">Kelembapan</div>
-                    <div class="value humidity">-%</div>
-                </div>
-                <div class="detail-item">
-                    <div class="label">Angin</div>
-                    <div class="value wind">- km/h</div>
-                </div>
+            <div class="info-grid">
+                <div class="info-label">Negara:</div>
+                <div class="info-value" id="country">-</div>
+                <div class="info-label">Provinsi:</div>
+                <div class="info-value" id="region">-</div>
+                <div class="info-label">Kecamatan:</div>
+                <div class="info-value" id="city">-</div>
+                <div class="divider"></div>
+                <div class="info-label">Suhu:</div>
+                <div class="info-value" id="temp">-</div>
+                <div class="info-label">Kelembaban:</div>
+                <div class="info-value" id="humidity">-</div>
+                <div class="divider"></div>
+                <div class="info-label">Lokasi:</div>
+                <div class="info-value" id="location">-</div>
+                <div class="info-label">Latitude:</div>
+                <div class="info-value" id="lat">-</div>
+                <div class="info-label">Longitude:</div>
+                <div class="info-value" id="lon">-</div>
             </div>
         </div>
     </div>
@@ -91,13 +123,14 @@
             $.ajax({
                 url: url,
                 success: function(data) {
-                    $('.location').text(data.location.name);
-                    $('.temperature').text(Math.round(data.current.temp_c) + "°C");
-                    $('.feels-like').text(Math.round(data.current.feelslike_c) + "°C");
-                    $('.humidity').text(data.current.humidity + "%");
-                    $('.wind').text(data.current.wind_kph + " km/h");
-                    $('.condition-text').text(data.current.condition.text);
-                    $('.condition-icon').attr('src', "https:" + data.current.condition.icon);
+                    $('#country').text(data.location.country);
+                    $('#region').text(data.location.region);
+                    $('#city').text(data.location.name);
+                    $('#temp').text(data.current.temp_c + '°C');
+                    $('#humidity').text(data.current.humidity + '%');
+                    $('#location').text(data.location.name + ', ' + data.location.region + ', ' + data.location.country);
+                    $('#lat').text(data.location.lat);
+                    $('#lon').text(data.location.lon);
                 }
             });
         }
@@ -107,7 +140,7 @@
         $('#city-input').on('keypress', function(e) {
             if (e.which === 13) getWeather($('#city-input').val());
         });
-        getWeather('Yogyakarta');
+        getWeather('yogyakarta');
     </script>
 </body>
 </html>

@@ -3,85 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cuaca Mewah</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <title>Cuaca</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Poppins', sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
-            flex-direction: column;
-            height: 100vh;
-            margin: 0;
-            transition: background 1s ease;
+            min-height: 100vh;
+            transition: background 0.6s ease;
+            background: linear-gradient(135deg, #89CFF0 0%, #4A90E2 100%);
         }
-        body.day {
-            background: linear-gradient(135deg, #81c7f5 0%, #3c8ce7 100%);
-        }
-        body.night {
-            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+        .container {
+            text-align: center;
         }
         .search-box {
-            display: flex;
-            margin-bottom: 30px;
-            border-radius: 50px;
+            margin-bottom: 20px;
         }
         .search-box input {
-            padding: 15px 25px;
-            font-size: 16px;
+            padding: 10px 15px;
+            font-size: 14px;
             border: none;
-            border-radius: 50px 0 0 50px;
-            width: 280px;
+            border-radius: 8px 0 0 8px;
+            width: 200px;
         }
         .search-box button {
-            padding: 15px 25px;
-            background: #3c8ce7;
-            color: white;
+            padding: 10px 20px;
+            font-size: 14px;
             border: none;
-            border-radius: 0 50px 50px 0;
+            border-radius: 0 8px 8px 0;
+            background: #4A90E2;
+            color: white;
             cursor: pointer;
         }
         .weather-card {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
             padding: 30px;
-            border-radius: 20px;
-            text-align: center;
-            width: 350px;
-            transition: all 0.5s ease;
-        }
-        .day .weather-card {
-            background: rgba(255, 255, 255, 0.8);
+            min-width: 280px;
             color: #333;
         }
-        .night .weather-card {
-            background: rgba(0, 0, 0, 0.2);
-            backdrop-filter: blur(15px);
-            color: #fff;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .location { font-size: 28px; }
-        .temperature { font-size: 84px; }
-        .condition { display: flex; align-items: center; justify-content: center; margin: 10px 0; }
-        .condition-icon { width: 80px; }
-        .details { display: flex; justify-content: space-around; margin-top: 20px; }
+        .location { font-size: 22px; font-weight: 600; }
+        .temperature { font-size: 48px; font-weight: 600; margin: 15px 0; }
+        .condition { display: flex; align-items: center; justify-content: center; margin: 15px 0; }
+        .condition-icon { width: 50px; margin-right: 10px; }
+        .details { display: flex; justify-content: space-between; margin-top: 20px; font-size: 12px; gap: 15px; }
+        .detail-item { text-align: center; }
+        .detail-item .label { opacity: 0.7; margin-bottom: 5px; }
+        .detail-item .value { font-weight: 600; }
     </style>
 </head>
-<body class="day">
-    <div class="search-box">
-        <input type="text" id="city-input" placeholder="Cari kota...">
-        <button id="search-btn">Cari</button>
-    </div>
-    <div class="weather-card">
-        <h2 class="location">Memuat...</h2>
-        <div class="condition">
-            <img class="condition-icon" src="" alt="">
-            <span class="condition-text">-</span>
+<body>
+    <div class="container">
+        <div class="search-box">
+            <input type="text" id="city-input" placeholder="Cari kota...">
+            <button id="search-btn">Cari</button>
         </div>
-        <h1 class="temperature">-°C</h1>
-        <div class="details">
-            <div><span>Terasa: </span><span class="feels-like">-°C</span></div>
-            <div><span>Kelembaban: </span><span class="humidity">-%</span></div>
-            <div><span>Angin: </span><span class="wind">- km/h</span></div>
+        <div class="weather-card">
+            <div class="location">Memuat...</div>
+            <div class="temperature">-°C</div>
+            <div class="condition">
+                <img class="condition-icon" src="" alt="">
+                <span class="condition-text">-</span>
+            </div>
+            <div class="details">
+                <div class="detail-item">
+                    <div class="label">Terasa</div>
+                    <div class="value feels-like">-°C</div>
+                </div>
+                <div class="detail-item">
+                    <div class="label">Kelembapan</div>
+                    <div class="value humidity">-%</div>
+                </div>
+                <div class="detail-item">
+                    <div class="label">Angin</div>
+                    <div class="value wind">- km/h</div>
+                </div>
+            </div>
         </div>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
@@ -92,11 +91,6 @@
             $.ajax({
                 url: url,
                 success: function(data) {
-                    if (data.current.is_day) {
-                        $('body').removeClass('night').addClass('day');
-                    } else {
-                        $('body').removeClass('day').addClass('night');
-                    }
                     $('.location').text(data.location.name);
                     $('.temperature').text(Math.round(data.current.temp_c) + "°C");
                     $('.feels-like').text(Math.round(data.current.feelslike_c) + "°C");
